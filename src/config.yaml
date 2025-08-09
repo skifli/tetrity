@@ -1,0 +1,15 @@
+watch_folder: "C:\\Users\\user\\Downloads\\Example Downloads"
+categories:
+  Images: [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff"]
+  Music: [".mp3", ".wav", ".flac", ".aac"]
+  Documents: [".pdf", ".docx", ".txt", ".xlsx", ".pptx"]
+  Videos: [".mp4", ".mkv", ".avi"]
+  Archives: [".zip", ".rar", ".tar", ".gz"]
+exclude_types: [".tmp", ".crdownload"]
+ignore_patterns:
+  - "*.part"
+  - "temp_*"
+metadata_file: ".downloadsorter_metadata.json"
+rename_pattern: "{timestamp}_{original}"
+timestamp_format: "%Y%m%d_%H%M%S"
+scan_on_start: true
