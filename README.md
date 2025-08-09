@@ -21,7 +21,7 @@ It uses multithreading to speed up moving files during initial scans and while w
 * Install dependencies via pip:
 
 ```bash
-python -m pip install requirements.txt
+python -m pip install src/requirements.txt
 ```
 
 (`pyyaml` is optional unless you want YAML config support.)

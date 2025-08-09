@@ -1,53 +1,46 @@
-# Simple workflow for building
 name: Build
 
-on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ["main"]
+on: [push]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+defaults:
+  run:
+    shell: bash
+    working-directory: src
 
 jobs:
-  build:
+  Build:
+    name: Build release binaries
+
     strategy:
+      fail-fast: false
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
 
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Check-out repository
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v2
         with:
-          python-version: '3.10' # Version range or exact version of a Python version to use, using SemVer's version range syntax
-          architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
-          cache: 'pip'
-          cache-dependency-path: |
-            **/requirements*.txt
+          python-version: 3.8
 
-      - name: Install Dependencies
+      - name: Install Python dependencies
         run: |
+          python -m pip install --upgrade pip pyinstaller pytest
           pip install -r requirements.txt
 
-      - name: Build Executable
-        uses: Nuitka/Nuitka-Action@main
-        with:
-          nuitka-version: main
-          script-name: src/main.py
-          mode: app
+      - name: Build with pyinstaller
+        run: pyinstaller --onefile --name=app-${{ matrix.os }} main.py
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+      - name: Deploy artifacts
+        uses: actions/upload-artifact@v2
         with:
-          name: ${{ runner.os }} Build
-          path: |
-            build/*.exe
-            build/*.bin
-            build/*.app/**/*
-            build/*.dist/**/*
-          include-hidden-files: true
+          name: app-${{ matrix.os }}
+          path: app/dist/app-${{ matrix.os }}*
+          if-no-files-found: error
